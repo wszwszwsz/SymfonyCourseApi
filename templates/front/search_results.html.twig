@@ -1,5 +1,7 @@
-<?php include('includes/_header.php'); ?>
-<?php include('includes/_menu.html.twig'); ?>
+{% extends 'base.html.twig' %}
+{% block main %}
+{#//<?php include('includes/_header.php'); ?>#}
+{#//<?php include('includes/_menu.html.twig'); ?>#}
 
 <section class="jumbotron text-center">
     <div class="container">
@@ -8,5 +10,7 @@
     </div>
 </section>
 
-<?php include('includes/_footer_links.html.twig'); ?>
-<?php include('includes/_footer.php'); ?>
+{#<?php include('includes/_footer_links.html.twig'); ?>#}
+{#<?php include('includes/_footer.php'); ?>#}
+
+{% endblock %}
