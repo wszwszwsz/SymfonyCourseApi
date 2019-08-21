@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @ORM\Table(name="categories")
  */
 class Category
 {
@@ -19,7 +20,7 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=45)
+     * @ORM\Column(type="string", length=45, unique=true)
      */
     private $name;
 
@@ -33,9 +34,15 @@ class Category
      */
     private $subcategories;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="category")
+     */
+    private $videos;
+
     public function __construct()
     {
         $this->subcategories = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,6 +99,37 @@ class Category
             // set the owning side to null (unless already changed)
             if ($subcategory->getParent() === $this) {
                 $subcategory->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->contains($video)) {
+            $this->videos->removeElement($video);
+            // set the owning side to null (unless already changed)
+            if ($video->getCategory() === $this) {
+                $video->setCategory(null);
             }
         }
 
