@@ -14,7 +14,7 @@ class AppExtension extends AbstractExtension
             // If your filter generates SAFE HTML, you should add a third
             // parameter: ['is_safe' => ['html']]
             // Reference: https://twig.symfony.com/doc/2.x/advanced.html#automatic-escaping
-            new TwigFilter('filter_name', [$this, 'doSomething']),
+            new TwigFilter('slugify', [$this, 'slugify']),
         ];
     }
 
@@ -25,8 +25,10 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function doSomething($value)
+    public function slugify($string)
     {
-        // ...
+        $string = preg_replace("/ +/", "-", trim($string));
+        $string = mb_strtolower(preg_replace('/[^A-Za-z0-9-]+/', ' ', $string),'UTF-8');
+        return $string;
     }
 }
