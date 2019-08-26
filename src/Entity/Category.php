@@ -20,12 +20,13 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=45, unique=true)
+     * @ORM\Column(type="string", length=45, unique = true)
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="subcategories")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
@@ -136,3 +137,4 @@ class Category
         return $this;
     }
 }
+

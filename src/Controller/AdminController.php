@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Utils\CategoryTreeAdminList;
+use App\Entity\Category;
 
 /**
  * @Route("/admin")
  */
-
 class AdminController extends AbstractController
 {
     /**
@@ -23,36 +24,13 @@ class AdminController extends AbstractController
     /**
      * @Route("/categories", name="categories")
      */
-    public function categories()
+    public function categories(CategoryTreeAdminList $categories)
     {
-        return $this->render('admin/categories.html.twig');
-    }
+        $categories->getCategoryList($categories->buildTree());
 
-
-    /**
-     * @Route("/videos", name="videos")
-     */
-    public function videos()
-    {
-        return $this->render('admin/videos.html.twig');
-    }
-
-
-    /**
-     * @Route("/upload-video", name="upload_video")
-     */
-    public function uploadVideo()
-    {
-        return $this->render('admin/upload_video.html.twig');
-    }
-
-
-    /**
-     * @Route("/users", name="users")
-     */
-    public function users()
-    {
-        return $this->render('admin/users.html.twig');
+        return $this->render('admin/categories.html.twig',[
+            'categories'=>$categories->categorylist
+        ]);
     }
 
     /**
@@ -63,4 +41,39 @@ class AdminController extends AbstractController
         return $this->render('admin/edit_category.html.twig');
     }
 
+    /**
+     * @Route("/delete-category/{id}", name="delete_category")
+     */
+    public function deleteCategory(Category $category)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($category);
+        $entityManager->flush();
+        return $this->redirectToRoute('categories');
+    }
+
+    /**
+     * @Route("/videos", name="videos")
+     */
+    public function videos()
+    {
+        return $this->render('admin/videos.html.twig');
+    }
+
+    /**
+     * @Route("/upload-video", name="upload_video")
+     */
+    public function uploadVideo()
+    {
+        return $this->render('admin/upload_video.html.twig');
+    }
+
+    /**
+     * @Route("/users", name="users")
+     */
+    public function users()
+    {
+        return $this->render('admin/users.html.twig');
+    }
 }
+

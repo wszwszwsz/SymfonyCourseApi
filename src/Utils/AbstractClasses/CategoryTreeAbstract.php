@@ -7,21 +7,23 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 abstract class CategoryTreeAbstract {
 
     public $categoriesArrayFromDb;
-    public $categoryList;
+    public $categorylist;
+
     protected static $dbconnection;
 
-    public function __construct(EntityManagerInterface $entitymanager, UrlGeneratorInterface $urlGenerator)
+    public function __construct(EntityManagerInterface $entitymanager, UrlGeneratorInterface $urlgenerator)
     {
         $this->entitymanager = $entitymanager;
-        $this->urlgenerator = $urlGenerator;
+        $this->urlgenerator = $urlgenerator;
         $this->categoriesArrayFromDb = $this->getCategories();
     }
+
     abstract public function getCategoryList(array $categories_array);
 
-    public function buildTree(int $parent_id = null):array
+    public function buildTree(int $parent_id = null): array
     {
         $subcategory = [];
-        foreach ($this->categoriesArrayFromDb as $category)
+        foreach($this->categoriesArrayFromDb as $category)
         {
             if($category['parent_id'] == $parent_id)
             {
@@ -36,13 +38,14 @@ abstract class CategoryTreeAbstract {
         return $subcategory;
     }
 
-    private function getCategories():array
+    private function getCategories(): array
     {
         if(self::$dbconnection)
         {
             return self::$dbconnection;
         }
-        else {
+        else
+        {
             $conn = $this->entitymanager->getConnection();
             $sql = "SELECT * FROM categories";
             $stmt = $conn->prepare($sql);
@@ -50,4 +53,5 @@ abstract class CategoryTreeAbstract {
             return self::$dbconnection = $stmt->fetchAll();
         }
     }
+
 }
